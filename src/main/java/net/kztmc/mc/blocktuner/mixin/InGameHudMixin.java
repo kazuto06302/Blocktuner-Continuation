@@ -1,18 +1,18 @@
 package net.kztmc.mc.blocktuner.mixin;
 
 import net.kztmc.mc.blocktuner.NoteNameHud;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(InGameHud.class)
+@Mixin(Gui.class)
 public class InGameHudMixin {
-     @Inject(method = "render", at = @At("TAIL"))
-     private void renderNoteNameHud(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
+     @Inject(method = "extractRenderState", at = @At("TAIL"))
+     private void renderNoteNameHud(GuiGraphicsExtractor context, DeltaTracker deltaTracker, CallbackInfo ci) {
          NoteNameHud.render(context);
      }
 }

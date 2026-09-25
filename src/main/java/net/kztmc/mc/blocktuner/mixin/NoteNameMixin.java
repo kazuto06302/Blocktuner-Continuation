@@ -1,12 +1,16 @@
 package net.kztmc.mc.blocktuner.mixin;
 
 import net.kztmc.mc.blocktuner.NoteNames;
-import net.minecraft.block.NoteBlock;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.text.*;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.BlockItemStateProperties;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.NoteBlock;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,15 +21,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class NoteNameMixin {
 
     @Unique
-    private static final Style NOTE_STYLE = Style.EMPTY.withColor(Formatting.AQUA);
+    private static final Style NOTE_STYLE = Style.EMPTY.withColor(ChatFormatting.AQUA);
 
-    @Inject(method = "getName", at = @At("HEAD"), cancellable = true)
-    private void getNoteName(CallbackInfoReturnable<Text> cir){
+    @Inject(method = "getHoverName", at = @At("HEAD"), cancellable = true)
+    private void getNoteName(CallbackInfoReturnable<Component> cir){
         ItemStack itemStack = (ItemStack)(Object)this;
-        if (itemStack.getItem() == Items.NOTE_BLOCK && itemStack.get(DataComponentTypes.BLOCK_STATE) != null) {
-            int note = itemStack.get(DataComponentTypes.BLOCK_STATE).getValue(NoteBlock.NOTE);
-            cir.setReturnValue(MutableText.of(new TranslatableTextContent(itemStack.getItem().getTranslationKey(), null, null))
-                    .append(MutableText.of(new PlainTextContent.Literal(" (" + NoteNames.get(note) + ", "+ note + ")")).setStyle(NOTE_STYLE)));
+        if (itemStack.is(Items.NOTE_BLOCK) && itemStack.has(DataComponents.BLOCK_STATE)) {
+            BlockItemStateProperties stateProperties = itemStack.get(DataComponents.BLOCK_STATE);
+            if (stateProperties != null) {
+                int note = stateProperties.apply(Blocks.NOTE_BLOCK.defaultBlockState()).getValue(NoteBlock.NOTE);
+                cir.setReturnValue(Component.translatable(itemStack.getItem().getDescriptionId())
+                        .append(Component.literal(" (" + NoteNames.get(note) + ", " + note + ")").withStyle(NOTE_STYLE)));
+            }
         }
     }
 }

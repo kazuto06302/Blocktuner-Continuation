@@ -6,11 +6,11 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.Items;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import org.lwjgl.glfw.GLFW;
 
 @Environment(EnvType.CLIENT)
@@ -24,23 +24,23 @@ public class BlockTunerClient implements ClientModInitializer {
             if (BlockTunerConfig.onBlockTunerServer
                     && isControlDown()
                     && !player.isSpectator()
-                    && !player.isSneaking()
-                    && world.getBlockState(hitResult.getBlockPos()).getBlock() == Blocks.NOTE_BLOCK
-                    && player.getMainHandStack().getItem() != Items.BLAZE_ROD) {
-                MinecraftClient client = MinecraftClient.getInstance();
-                client.execute(() -> client.setScreen(new TuningScreen(Text.empty(), hitResult.getBlockPos())));
-                return ActionResult.FAIL;
+                    && !player.isShiftKeyDown()
+                    && world.getBlockState(hitResult.getBlockPos()).is(Blocks.NOTE_BLOCK)
+                    && !player.getMainHandItem().is(Items.BLAZE_ROD)) {
+                Minecraft client = Minecraft.getInstance();
+                client.execute(() -> client.setScreen(new TuningScreen(Component.empty(), hitResult.getBlockPos())));
+                return InteractionResult.FAIL;
             }
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         });
 
         // knowing a BlockTuner server
-        ClientPlayNetworking.registerGlobalReceiver(ProtocolCheckS2CPacket.ID, ProtocolCheckS2CPacket::receive);
+        ClientPlayNetworking.registerGlobalReceiver(ProtocolCheckS2CPacket.TYPE, ProtocolCheckS2CPacket::receive);
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> BlockTunerConfig.onBlockTunerServer = false);
     }
 
     public static boolean isControlDown() {
-        return GLFW.glfwGetKey(MinecraftClient.getInstance().getWindow().getHandle(), GLFW.GLFW_KEY_LEFT_CONTROL) == GLFW.GLFW_PRESS ||
-               GLFW.glfwGetKey(MinecraftClient.getInstance().getWindow().getHandle(), GLFW.GLFW_KEY_RIGHT_CONTROL) == GLFW.GLFW_PRESS;
+        return GLFW.glfwGetKey(Minecraft.getInstance().getWindow().handle(), GLFW.GLFW_KEY_LEFT_CONTROL) == GLFW.GLFW_PRESS ||
+               GLFW.glfwGetKey(Minecraft.getInstance().getWindow().handle(), GLFW.GLFW_KEY_RIGHT_CONTROL) == GLFW.GLFW_PRESS;
     }
 }

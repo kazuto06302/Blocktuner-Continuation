@@ -1,14 +1,15 @@
 package net.kztmc.mc.blocktuner.mixin;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.NoteBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Items;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.NoteBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,24 +18,24 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(NoteBlock.class)
 public class NoteBlockMixin extends Block {
 
-    public NoteBlockMixin(Settings settings) {
-        super(settings);
+    public NoteBlockMixin(BlockBehaviour.Properties properties) {
+        super(properties);
     }
 
-    @Inject(method = "onUse",
+    @Inject(method = "useWithoutItem",
             cancellable = true,
             at = @At(value = "INVOKE",
                     shift = At.Shift.BEFORE,
-                    target = "Lnet/minecraft/block/BlockState;cycle(Lnet/minecraft/state/property/Property;)Ljava/lang/Object;"))
-    private void onTune(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir){
+                    target = "Lnet/minecraft/world/level/block/state/BlockState;cycle(Lnet/minecraft/world/level/block/state/properties/Property;)Ljava/lang/Object;"))
+    private void onTune(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit, CallbackInfoReturnable<InteractionResult> cir){
 
         // allows playing with right clicks while holding blaze rods
-        if (player.getMainHandStack().getItem() == Items.BLAZE_ROD) {
+        if (player.getMainHandItem().is(Items.BLAZE_ROD)) {
 
-            if (world.getBlockState(pos.up()).isAir()) {
-                world.addSyncedBlockEvent(pos, (NoteBlock) (Object) this, 0, 0);
+            if (world.getBlockState(pos.above()).isAir()) {
+                world.blockEvent(pos, (NoteBlock) (Object) this, 0, 0);
             }
-            cir.setReturnValue(ActionResult.CONSUME);
+            cir.setReturnValue(InteractionResult.CONSUME);
         }
     }
 }
