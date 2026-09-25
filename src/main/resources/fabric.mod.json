@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "blocktuner",
+  "version": "${version}",
+  "name": "Blocktuner Continuation",
+  "description": "Continuation of Blocktuner for modern Minecraft versions",
+  "authors": [
+    "xwjcool",
+    "kazut0_"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/mod/blocktuner-continuation",
+    "sources": "https://github.com/kazuto06302/Blocktuner-Continuation",
+    "issues": "https://dsc.gg/kazut0"
+  },
+  "license": "LGPLv3",
+  "icon": "assets/blocktuner/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "net.kztmc.mc.blocktuner.BlockTunerClient"
+    ],
+    "main": [
+      "net.kztmc.mc.blocktuner.BlockTuner"
+    ]
+  },
+  "mixins": [
+    "blocktuner.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "minecraft": "1.21.*"
+  },
+  "conflicts": {
+    "noteduplicator": "*",
+    "tweakeroo": "*"
+  }
+}
