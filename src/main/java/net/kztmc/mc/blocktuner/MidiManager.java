@@ -13,7 +13,7 @@ public class MidiManager {
     public static final Vector<MidiDevice> transmitters = new Vector<MidiDevice>(0, 1);
     static int deviceIndex = 0;
 
-    private MidiManager() {}
+    private MidiManager() { }
 
     public static MidiManager getMidiManager() {
         return midiManager;
