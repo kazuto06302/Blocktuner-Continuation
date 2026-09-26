@@ -9,6 +9,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.NoteBlock;
@@ -42,9 +43,13 @@ public record TuningC2SPacket(BlockPos blockPos, int note) implements CustomPack
     }
 
     private static void swingPlayerHand(ServerPlayNetworking.Context context) {
-        context.player().swing(InteractionHand.MAIN_HAND);
+        context.player().swing(
+                InteractionHand.MAIN_HAND,
+                SwingAnimation.DEFAULT,
+                true
+        );
+        // -26.2 => context.player().swing(InteractionHand.MAIN_HAND);
     }
-
     private static void try2PlayNoteBlock(Level world, BlockPos pos, double note) {
         if (isAirAbove(world, pos)) playNoteBlock(world, pos, note);
     }

@@ -16,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.block.Blocks;
 
 import javax.sound.midi.MidiDevice;
@@ -158,7 +159,12 @@ public class TuningScreen extends Screen {
 
             if (minecraft != null && minecraft.player != null && minecraft.getConnection() != null) {
                 sendTuningPacket(pos, note);
-                minecraft.player.swing(InteractionHand.MAIN_HAND);
+                // -26.2 => minecraft.player.swing(InteractionHand.MAIN_HAND);
+                minecraft.player.swing(
+                        InteractionHand.MAIN_HAND,
+                        SwingAnimation.DEFAULT,
+                        true
+                );
             }
 
             if (!BlockTunerConfig.isPlayMode()){
@@ -464,7 +470,8 @@ public class TuningScreen extends Screen {
     @Override
     public boolean keyPressed(KeyEvent keyEvent) {
         if (BlockTunerConfig.isKeyToPiano() && keyEvent.key() != 256) {
-            int note = keyToNote(keyEvent.scancode());
+            int note = keyToNote(keyEvent.key());
+            // -26.2 => int note = keyToNote(keyEvent.scancode());
             if (note >= 0 && note <= 24 && !pianoKeys[note].played) {
                 pianoKeys[note].playKey();
             }
@@ -480,7 +487,8 @@ public class TuningScreen extends Screen {
 
     @Override
     public boolean keyReleased(KeyEvent keyEvent) {
-        int note = keyToNote(keyEvent.scancode());
+        int note = keyToNote(keyEvent.key());
+        // -26.2 => int note = keyToNote(keyEvent.scancode());
         if (note >= 0 && note <= 24) {
             pianoKeys[note].releaseKey();
         }
