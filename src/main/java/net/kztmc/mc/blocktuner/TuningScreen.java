@@ -146,6 +146,10 @@ public class TuningScreen extends Screen {
             pianoKeys[note] = this;
         }
 
+        @Override
+        public void playDownSound(net.minecraft.client.sounds.SoundManager soundManager) {
+        }
+
         protected void drawKeyTooltip(GuiGraphicsExtractor context) {
             if (this.visible && this.isHovered()) {
                 context.setComponentTooltipForNextFrame(TuningScreen.this.font, List.of(Component.literal(NoteNames.get(note))), TuningScreen.this.x - 8, TuningScreen.this.y - 2);
