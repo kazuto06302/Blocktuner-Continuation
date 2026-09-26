@@ -29,7 +29,6 @@ public class BlockTunerClient implements ClientModInitializer {
                     && !player.getMainHandItem().is(Items.BLAZE_ROD)) {
                 Minecraft client = Minecraft.getInstance();
                 client.execute(() -> client.gui.setScreen(new TuningScreen(Component.empty(), hitResult.getBlockPos())));
-                //26.1 => client.setScreen()
                 return InteractionResult.FAIL;
             }
             return InteractionResult.PASS;

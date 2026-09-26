@@ -45,7 +45,6 @@ public class NoteBlockMixinClient extends Block {
         Minecraft client = Minecraft.getInstance();
         if (placer != null && client != null && placer == client.player && BlockTunerClient.isControlDown()) {
             client.execute(() -> client.gui.setScreen(new TuningScreen(Component.empty(), pos)));
-            //26.1 => client.setScreen()
         }
         super.setPlacedBy(world, pos, state, placer, itemStack);
     }
