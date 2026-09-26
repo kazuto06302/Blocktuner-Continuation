@@ -48,7 +48,6 @@ public record TuningC2SPacket(BlockPos blockPos, int note) implements CustomPack
                 SwingAnimation.DEFAULT,
                 true
         );
-        // -26.2 => context.player().swing(InteractionHand.MAIN_HAND);
     }
     private static void try2PlayNoteBlock(Level world, BlockPos pos, double note) {
         if (isAirAbove(world, pos)) playNoteBlock(world, pos, note);

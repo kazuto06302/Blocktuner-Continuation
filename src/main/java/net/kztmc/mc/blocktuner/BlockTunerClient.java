@@ -11,7 +11,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-// import org.lwjgl.glfw.GLFW;
 
 @Environment(EnvType.CLIENT)
 public class BlockTunerClient implements ClientModInitializer {
@@ -29,7 +28,6 @@ public class BlockTunerClient implements ClientModInitializer {
                     && !player.getMainHandItem().is(Items.BLAZE_ROD)) {
                 Minecraft client = Minecraft.getInstance();
                 client.execute(() -> client.gui.setScreen(new TuningScreen(Component.empty(), hitResult.getBlockPos())));
-                //26.1 => client.setScreen()
                 return InteractionResult.FAIL;
             }
             return InteractionResult.PASS;
@@ -43,9 +41,4 @@ public class BlockTunerClient implements ClientModInitializer {
     public static boolean isControlDown() {
         return Minecraft.getInstance().hasControlDown();
     }
-
-//    public static boolean isControlDown() {
-//        return GLFW.glfwGetKey(Minecraft.getInstance().getWindow().handle(), GLFW.GLFW_KEY_LEFT_CONTROL) == GLFW.GLFW_PRESS ||
-//               GLFW.glfwGetKey(Minecraft.getInstance().getWindow().handle(), GLFW.GLFW_KEY_RIGHT_CONTROL) == GLFW.GLFW_PRESS;
-//    }
 }
